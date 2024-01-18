@@ -75,6 +75,8 @@ create TABLE  `scheduler_dependencies` (
   `id` int NOT NULL AUTO_INCREMENT,
   `from` int DEFAULT NULL,
   `to` int DEFAULT NULL,
+  `fromEvent` int DEFAULT NULL,
+  `toEvent` int DEFAULT NULL,
   `fromSide` varchar(10) DEFAULT 'right',
   `toSide` varchar(10) DEFAULT 'left',
   `type` int DEFAULT NULL,

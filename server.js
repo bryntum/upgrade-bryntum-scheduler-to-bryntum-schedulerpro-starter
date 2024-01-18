@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-  express.static(path.join(__dirname, "/node_modules/@bryntum/scheduler"))
+  express.static(path.join(__dirname, "/node_modules/@bryntum/schedulerpro"))
 );
 app.use(bodyParser.json());
 
@@ -28,16 +28,40 @@ const db = mysql.createPool({
 });
 
 async function serverConfig() {
-  // Scheduler
   app.get("/load", async (req, res) => {
     try {
-      const [[resources], [events], [dependencies]] = await Promise.all([
+      const [
+        [resources],
+        [events],
+        [dependencies],
+        [assignments],
+        [calendars],
+      ] = await Promise.all([
         db.query("SELECT * FROM scheduler_resources"),
         db.query("SELECT * FROM scheduler_events"),
         db.query("SELECT * FROM scheduler_dependencies"),
+        db.query("SELECT * FROM scheduler_assignments"),
+        db.query("SELECT * FROM scheduler_calendars"),
       ]);
+
+      const calendarsData = calendars.map((calendar) => {
+        const calendarObj = {
+          id: calendar.id,
+          name: calendar.name,
+          intervals: calendar.intervals,
+        };
+        if (calendar?.unspecifiedTimeIsWorking) {
+          calendarObj.unspecifiedTimeIsWorking =
+            calendar.unspecifiedTimeIsWorking;
+        }
+        return calendarObj;
+      });
+
       res.send({
         success: true,
+        project: {
+          calendar: "workweek",
+        },
         resources: {
           rows: resources,
         },
@@ -47,21 +71,31 @@ async function serverConfig() {
         dependencies: {
           rows: dependencies,
         },
+        assignments: {
+          rows: assignments,
+        },
+        calendars: {
+          rows: calendarsData,
+        },
       });
     } catch (error) {
       console.error({ error });
       res.send({
         success: false,
         message:
-          "There was an error loading the resources, events, and dependencies data.",
+          "There was an error loading the resources, events, dependencies, and assignments data.",
       });
     }
   });
 
   app.post("/sync", async function (req, res) {
-    const { requestId, resources, events, dependencies } = req.body;
+    const { requestId, resources, events, dependencies, assignments } =
+      req.body;
+
     try {
       const response = { requestId, success: true };
+      let eventMapping = {};
+
       if (resources) {
         const rows = await applyTableChanges("scheduler_resources", resources);
         // if new data to update client
@@ -69,12 +103,34 @@ async function serverConfig() {
           response.resources = { rows };
         }
       }
+
       if (events) {
         const rows = await applyTableChanges("scheduler_events", events);
         if (rows) {
+          if (events?.added) {
+            rows.forEach((row) => {
+              eventMapping[row.$PhantomId] = row.id;
+            });
+          }
           response.events = { rows };
         }
       }
+
+      if (assignments) {
+        if (events && events?.added) {
+          assignments.added.forEach((assignment) => {
+            assignment.eventId = eventMapping[assignment.eventId];
+          });
+        }
+        const rows = await applyTableChanges(
+          "scheduler_assignments",
+          assignments
+        );
+        if (rows) {
+          response.assignments = { rows };
+        }
+      }
+
       if (dependencies) {
         const rows = await applyTableChanges(
           "scheduler_dependencies",
@@ -84,6 +140,7 @@ async function serverConfig() {
           response.dependencies = { rows };
         }
       }
+
       res.send(response);
     } catch (error) {
       console.error({ error });
@@ -112,23 +169,51 @@ async function applyTableChanges(table, changes) {
   return rows;
 }
 
-function createOperation(added, table) {
-  return Promise.all(
+async function createOperation(added, table) {
+  const results = await Promise.all(
     added.map(async (record) => {
-      const { $PhantomId, exceptionDates, ...data } = record;
+      const { $PhantomId, exceptionDates, intervals, segments, ...data } =
+        record;
+
+      let insertData;
+      if (table === "scheduler_events") {
+        insertData = {
+          ...data,
+          exceptionDates: exceptionDates
+            ? JSON.stringify(exceptionDates)
+            : null,
+          segments: segments ? JSON.stringify(segments) : null,
+        };
+      }
+      if (table === "scheduler_dependencies") {
+        insertData = {
+          ...data,
+          exceptionDates: exceptionDates
+            ? JSON.stringify(exceptionDates)
+            : null,
+        };
+      }
+      if (table === "scheduler_calendars") {
+        insertData = {
+          ...data,
+          intervals: intervals ? JSON.stringify(intervals) : null,
+        };
+      }
+      if (
+        table === "scheduler_resources" ||
+        table === "scheduler_assignments"
+      ) {
+        insertData = data;
+      }
       const [result] = await db.query("INSERT INTO ?? set ?", [
         table,
-        table === "resources" || table === "dependencies"
-          ? data
-          : {
-              ...data,
-              exceptionDates: JSON.stringify(exceptionDates),
-            },
+        insertData,
       ]);
-      // report to the client that we changed the record identifier
-      return { $PhantomId, id: result.insertId };
+      // Return necessary data for client-side update
+      return { $PhantomId, id: result.insertId, ...data };
     })
   );
+  return results;
 }
 
 function deleteOperation(deleted, table) {
@@ -140,17 +225,39 @@ function deleteOperation(deleted, table) {
 
 function updateOperation(updated, table) {
   return Promise.all(
-    updated.map(({ id, exceptionDates, ...data }) => {
-      return db.query("UPDATE ?? set ? where id = ?", [
-        table,
-        table === "resources" || table === "dependencies"
-          ? data
-          : {
-              ...data,
-              exceptionDates: JSON.stringify(exceptionDates),
-            },
-        id,
-      ]);
+    updated.map(({ id, exceptionDates, segments, intervals, ...data }) => {
+      let insertData;
+      if (table === "scheduler_events") {
+        insertData = {
+          ...data,
+          exceptionDates: exceptionDates
+            ? JSON.stringify(exceptionDates)
+            : null,
+          segments: segments ? JSON.stringify(segments) : null,
+        };
+      }
+      if (table === "scheduler_dependencies") {
+        insertData = {
+          ...data,
+          exceptionDates: exceptionDates
+            ? JSON.stringify(exceptionDates)
+            : null,
+        };
+      }
+      if (table === "scheduler_calendars") {
+        insertData = {
+          ...data,
+          intervals: intervals ? JSON.stringify(intervals) : null,
+        };
+      }
+      if (
+        table === "scheduler_resources" ||
+        table === "scheduler_assignments"
+      ) {
+        insertData = data;
+      }
+
+      return db.query("UPDATE ?? set ? where id = ?", [table, insertData, id]);
     })
   );
 }
