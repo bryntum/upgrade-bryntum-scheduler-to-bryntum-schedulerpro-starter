@@ -1,0 +1,88 @@
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: Lato, "Open Sans", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+}
+
+.label-text-wrap {
+  white-space: normal;
+}
+
+.confirmedField {
+  padding: 1rem;
+}
+
+.b-event-name {
+  font-weight: bold;
+}
+
+.b-resource-avatar.b-icon {
+  font-size: 1.2em;
+}
+
+.b-patient {
+  font-size: 0.8em;
+  margin-top: 0.5em;
+}
+
+.b-sch-event-content {
+  position: relative;
+  width: 100%;
+}
+
+.b-sch-event-wrap {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.18);
+}
+.b-sch-event-wrap .b-sch-event {
+  background: #f9f9f9;
+  border-top: 2px solid green;
+}
+.b-sch-event-wrap .b-sch-event-content > i:first-child {
+  display: flex;
+  align-items: center;
+  font-size: 1.3em;
+  margin-inline-start: 0.1em;
+}
+.b-sch-event-wrap .b-sch-event-content div {
+  flex: 1;
+}
+
+.b-sch-event-wrap .b-sch-event-content * {
+  color: #606263;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.b-sch-event-wrap .b-fa-check {
+  margin-inline-start: 0.5em;
+}
+
+.b-sch-event-tooltip {
+  min-width: 15em;
+}
+.b-sch-event-tooltip dl {
+  margin: 0;
+}
+.b-sch-event-tooltip dt, .b-sch-event-tooltip dd {
+  margin-inline-start: 0;
+}
+
+.b-sch-event-tooltip dt {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.b-sch-event-tooltip dd:not(:last-child) {
+  margin-bottom: 1.5em;
+}
+
+.b-sch-event-tooltip dd .b-icon {
+  margin-inline-end: 0.5em;
+}
