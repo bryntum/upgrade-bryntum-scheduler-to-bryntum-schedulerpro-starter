@@ -103,47 +103,13 @@ const scheduler = new Scheduler({
           }
       </dl>`,
     },
-    eventTooltip: {
-      // A custom HTML template shown in a tooltip when events are hovered
-      template: ({ eventRecord }) => `
-        <dl>
-          <dt>${StringHelper.encodeHtml(eventRecord.name)}</dt>
-          <dd>
-            <i class="b-icon b-fa-user"></i>${StringHelper.encodeHtml(
-              eventRecord.resource.name
-            )}
-          </dd>
-          <dt>Scheduled at:</dt>
-          <dd>
-            <i class="b-icon b-fa-calendar-alt"></i>${DateHelper.format(
-              eventRecord.startDate,
-              "LST"
-            )} - ${DateHelper.format(eventRecord.endDate, "LST")}
-          </dd>
-          ${
-            eventRecord.calendar
-              ? `
-          <dt>Schedule info:</dt>
-          <dd>
-            <i class="b-icon b-fa-calendar-alt"></i>${StringHelper.encodeHtml(
-              eventRecord.calendarInfo
-            )}
-          </dd>`
-              : ""
-          }
-        </dl>`,
-    },
     eventEdit: {
-      // Change editor title
       editorConfig: {
         title: "Edit appointment",
         autoUpdateRecord: true,
       },
       // Customize its contents
       items: {
-        // generalTab: {
-        //   items: {
-        // Add a patient field
         patientField: {
           type: "text",
           name: "patient",
@@ -176,7 +142,6 @@ const scheduler = new Scheduler({
           label: "Appointment confirmed?",
           cls: "confirmedField",
         },
-        // },
       },
     },
     filterBar: true,
