@@ -2,15 +2,15 @@
 
 ## Set up a MySQL database locally
 
-First set up a MySQL database locally by installing MySQL Server and MySQL Workbench. MySQL Workbench is a MySQL GUI that we’ll use to create a database with tables for the Scheduler data and to run queries. Download MySQL Server and MySQL Workbench from the MySQL community downloads page. If you’re using Windows, you can use the MySQL Installer to download the MySQL products. Use the default configurations when configuring MySQL Server and Workbench. Make sure that you configure the MySQL Server to start at system startup for convenience.
+First set up a MySQL database locally by installing MySQL Server and MySQL Workbench. MySQL Workbench is a MySQL GUI that we'll use to create a database with tables for the Scheduler data and to run queries. Download MySQL Server and MySQL Workbench from the MySQL community downloads page. If you're using Windows, you can use the MySQL Installer to download the MySQL products. Use the default configurations when configuring MySQL Server and Workbench. Make sure that you configure the MySQL Server to start at system startup for convenience.
 
 Open the MySQL Workbench desktop application. Open the local instance of the MySQL Server that you configured.
 
-We’ll write our MySQL queries in the query tab and execute the queries by pressing the yellow lightning bolt button.
+We'll write our MySQL queries in the query tab and execute the queries by pressing the yellow lightning bolt button.
 
 ## Create a MySQL database for the Bryntum Scheduler data: Adding tables and example data
 
-Let’s run some MySQL queries in MySQL Workbench to create, use, and populate a database for our Bryntum Scheduler. Execute the following query to create a database called `bryntum_scheduler_pro`:
+Let's run some MySQL queries in MySQL Workbench to create, use, and populate a database for our Bryntum Scheduler. Execute the following query to create a database called `bryntum_scheduler_pro`:
 
 
 ```sql
@@ -23,7 +23,7 @@ Run the following query so that we set our newly created database for use:
 USE bryntum_scheduler_pro;
 ```
 
-Let’s create the three tables that we’ll use for our Bryntum Scheduler data: `scheduler_resources`, `scheduler_events`, and `scheduler_dependencies`:
+Let's create the three tables that we'll use for our Bryntum Scheduler data: `scheduler_resources`, `scheduler_events`, and `scheduler_dependencies`:
 
 ```sql
 create TABLE `scheduler_resources`
@@ -92,7 +92,7 @@ create TABLE  `scheduler_dependencies` (
 );
 ```
 
-Now let's add some example resources data to the scheduler_resources table:
+Now let's add some example resources data to the `scheduler_resources` table:
 
 ```sql
 INSERT INTO `scheduler_resources` (id, name, role, iconCls, image)
@@ -104,7 +104,7 @@ VALUES (1, 'Lucy', 'Technician', 'b-icon b-fa-user', false),
        (6, 'Liam', 'Technician', 'b-icon b-fa-user', false);
 ```
 
-Add some example events data to the scheduler_events table:
+Add some example events data to the `scheduler_events` table:
 
 ```sql
 INSERT INTO `scheduler_events` (id, name, patient, requiredRole, confirmed, duration, startDate, resourceId, iconCls)
@@ -123,7 +123,7 @@ VALUES (1, 'X-ray', 'Sarah Larson', 'Technician', true, 1, '2024-01-29T09:00', 1
        (13, 'Surgery', 'Paulo Santos', 'Doctor', true, 3, '2024-01-29T12:00', 5, 'b-fa b-fa-hospital');
 ```
 
-Now add some example dependencies data to the scheduler_dependencies table:
+Now add some example dependencies data to the `scheduler_dependencies` table:
 
 ```sql
 INSERT INTO `scheduler_dependencies` (id, `from`, `to`)
@@ -152,18 +152,18 @@ PASSWORD=your-password
 DATABASE=bryntum_scheduler_pro
 ```
 
-Don’t forget to add the root password for your MySQL server.
+Don't forget to add the root password for your MySQL server.
 
 ## Install the Bryntum Scheduler
 
-Install the Bryntum Scheduler by following [step 1](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#access-to-npm-registry) and [step 4](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#install-component) of the [Getting Started with Bryntum Scheduler in JavaScript with npm package manager guide](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm).
+Install the Bryntum Scheduler by following [step 1](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#access-to-npm-registry) and [step 4](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#install-component) of the [Getting Started with Bryntum Scheduler in JavaScript with npm package manager guide](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm).
 
 The HTML, CSS, and JavaScript file in the public folder contains the code for our client-side Bryntum Scheduler.
 
-Run the local dev server by running the command following command:
+Run the local dev server by running the following command:
 
 ```bash
 npm start
 ```
 
-You’ll see a Bryntum Scheduler with 13 events when you visit http://localhost:1337. The scheduler will have full CRUD functionality.
+You'll see a Bryntum Scheduler with 13 events when you visit http://localhost:1337. The scheduler will have full CRUD functionality.
