@@ -1,8 +1,8 @@
-# Upgrade from Bryntum Scheduler to Bryntum Scheduler Pro guide: starter repository
+# Upgrade from Bryntum Scheduler to Bryntum Scheduler Pro guide: Starter repository
 
 ## Set up a MySQL database locally
 
-First set up a MySQL database locally by installing MySQL Server and MySQL Workbench. MySQL Workbench is a MySQL GUI that we'll use to create a database with tables for the Scheduler data and to run queries. Download MySQL Server and MySQL Workbench from the MySQL community downloads page. If you're using Windows, you can use the MySQL Installer to download the MySQL products. Use the default configurations when configuring MySQL Server and Workbench. Make sure that you configure the MySQL Server to start at system startup for convenience.
+First, set up a MySQL database locally by installing MySQL Server and MySQL Workbench. MySQL Workbench is a MySQL GUI that we'll use to create a database with tables for the Scheduler data and to run queries. Download MySQL Server and MySQL Workbench from the MySQL community downloads page. If you're using Windows, you can use the MySQL Installer to download the MySQL products. Use the default configurations when configuring MySQL Server and Workbench. Make sure that you configure the MySQL Server to start at system startup for convenience.
 
 Open the MySQL Workbench desktop application. Open the local instance of the MySQL Server that you configured.
 
@@ -17,13 +17,13 @@ Let's run some MySQL queries in MySQL Workbench to create, use, and populate a d
 CREATE DATABASE bryntum_scheduler_pro;
 ```
 
-Run the following query so that we set our newly created database for use:
+Run the following query to set the newly created database for use:
 
 ```sql
 USE bryntum_scheduler_pro;
 ```
 
-Let's create the three tables that we'll use for our Bryntum Scheduler data: `scheduler_resources`, `scheduler_events`, and `scheduler_dependencies`:
+Create the three tables that we'll use for our Bryntum Scheduler data: `scheduler_resources`, `scheduler_events`, and `scheduler_dependencies`:
 
 ```sql
 create TABLE `scheduler_resources`
@@ -92,7 +92,7 @@ create TABLE  `scheduler_dependencies` (
 );
 ```
 
-Now let's add some example resources data to the `scheduler_resources` table:
+Add some example resources data to the `scheduler_resources` table:
 
 ```sql
 INSERT INTO `scheduler_resources` (id, name, role, iconCls, image)
@@ -123,7 +123,7 @@ VALUES (1, 'X-ray', 'Sarah Larson', 'Technician', true, 1, '2024-01-29T09:00', 1
        (13, 'Surgery', 'Paulo Santos', 'Doctor', true, 3, '2024-01-29T12:00', 5, 'b-fa b-fa-hospital');
 ```
 
-Now add some example dependencies data to the `scheduler_dependencies` table:
+Add some example dependencies data to the `scheduler_dependencies` table:
 
 ```sql
 INSERT INTO `scheduler_dependencies` (id, `from`, `to`)
@@ -140,9 +140,9 @@ npm install
 
 In the `server.js` file, the Express server uses the MySQL2 library to connect to MySQL and run queries.
 
-The `serverConfig` function runs when the server is started. It connects to the MySQL database. It also has some helper functions that are used for CRUD operations.
+The `serverConfig` function runs when the server is started. It connects to the MySQL database and has some helper functions for CRUD operations.
 
-Now create a `.env` file in the root folder and add the following lines for connecting to your MySQL database:
+Create a `.env` file in the root folder and add the following lines for connecting to your MySQL database:
 
 ```
 HOST=localhost
@@ -158,7 +158,7 @@ Don't forget to add the root password for your MySQL server.
 
 Install the Bryntum Scheduler by following [step 1](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#access-to-npm-registry) and [step 4](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm#install-component) of the [Getting Started with Bryntum Scheduler in JavaScript with npm package manager guide](https://bryntum.com/products/scheduler/docs/guide/Scheduler/quick-start/javascript-npm).
 
-The HTML, CSS, and JavaScript file in the public folder contains the code for our client-side Bryntum Scheduler.
+The HTML, CSS, and JavaScript files in the `public` folder contain the code for the client-side Bryntum Scheduler.
 
 Run the local dev server by running the following command:
 
